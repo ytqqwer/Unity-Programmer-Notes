@@ -20,10 +20,7 @@
 - [深入理解Lua的闭包](#深入理解lua的闭包)
 - [类使用：和.的区别](#类使用和的区别)
 - [require，loadfile和dofile的区别](#requireloadfile和dofile的区别)
-- [热更新](#热更新)
   - [lua require](#lua-require)
-  - [深入理解xLua基于IL代码注入的热更新原理](#深入理解xlua基于il代码注入的热更新原理)
-  - [xLua学习之路（二） ------ 通过xLua 虚拟机运行lua程序（包括lua代码/lua脚本）](#xlua学习之路二--------通过xlua-虚拟机运行lua程序包括lua代码lua脚本)
 - [协同程序(coroutine)](#协同程序coroutine)
   - [协程的用法](#协程的用法)
   - [协程的作用](#协程的作用)
@@ -407,8 +404,6 @@ dofile每次调用的时候都会编译且执行。
 
 简单来说就是dofile执行多遍，require执行一次。
 
-# 热更新
-
 ## lua require
 
 Lua想要调用其他文件中的函数时，需要使用require方法。此时require会把函数及其内容缓存到packet.loaded【modelname】，而我们想改变数据的话，只需要把缓存区中的内容进行更改就可以实现了。怎么对packet.loaded的内容进行修改?
@@ -438,12 +433,6 @@ function reloadUp(module_name)
     package.loaded[module_name] = old_module  
 end  
 ```
-
-## [深入理解xLua基于IL代码注入的热更新原理](https://www.1024sou.com/article/364376.html)
-
-
-## [xLua学习之路（二） ------ 通过xLua 虚拟机运行lua程序（包括lua代码/lua脚本）](https://blog.csdn.net/dengshunhao/article/details/80534760)
-
 
 # 协同程序(coroutine)
 

@@ -52,9 +52,9 @@
     - [UGUI渲染顺序](#ugui渲染顺序)
     - [UI上粒子效果如何实现](#ui上粒子效果如何实现)
     - [如何在UI上显示模型](#如何在ui上显示模型)
-  - [Canvas](#canvas)
-    - [画布组 (Canvas Group)](#画布组-canvas-group)
   - [UGUI渲染细节](#ugui渲染细节)
+    - [Canvas](#canvas)
+    - [画布组 (Canvas Group)](#画布组-canvas-group)
     - [合批过程（Canvases）](#合批过程canvases)
     - [重绘过程（Graphics）](#重绘过程graphics)
     - [排版重建](#排版重建)
@@ -136,9 +136,6 @@ UnityEvent 与标准委托有类似的限制。也就是说，它们会保留对
 [C# 学习笔记：散列与哈希](https://blog.csdn.net/qq_38601621/article/details/100350691)
 
 ## 简述一下对象池，你觉得在FPS里哪些东西适合使用对象池
-
-（空间获取时间）
-
 对象池就存放需要被反复调用资源的一个空间，当一个对象回大量生成的时候如果每次都销毁创建会很费时间，通过对象池把暂时不用的对象放到一个池中（也就是一个集合），当下次要重新生成这个对象的时候先去池中查找一下是否有可用的对象，如果有的话就直接拿出来使用，不需要再创建，如果池中没有可用的对象，才需要重新创建，利用空间换时间来达到游戏的高速运行效果，在FPS游戏中要常被大量复制的对象包括子弹，敌人，粒子等
 
 ## [MenuItem] 什么意思?
@@ -201,31 +198,26 @@ DestroyImmeditate 函数应只在编写 Editor 代码时使用，因为在编辑
 ## 真机调试，看打印日志你是如何处理的？
 [unity游戏框架学习-日志系统](https://www.cnblogs.com/wang-jin-fu/p/11263310.html)
 
-1.日志开关。只有开发版本开启日志,因为日志还是比较耗性能的。。。
-
-2.堆栈日志界面：ERROR时弹出界面，该界面显示错误的堆栈日志。大半部分错误日志是不会导致崩溃，如果不弹窗qa可能会漏掉一些重要的log信息。
-
-3.接入SRDebugger，方便在qa测试时，在测试机查看详细的日志信息，方便定位错误出现的原因。
-
-4.FPS帧率的显示
-
-5.游戏正式上线以后，我们很难拿到用户的错误日志，这时候我们需要把错误的日志上传到我们的服务器
-
-6.当游戏崩溃时我们是拿不到unity打印的日志的，这时候就需要接入FireBase了，它可以帮我们把崩溃的详细日志上传到网页上，方便我们查看
-
+1. 日志开关。只有开发版本开启日志,因为日志还是比较耗性能的。
+2. 堆栈日志界面：ERROR时弹出界面，该界面显示错误的堆栈日志。大半部分错误日志是不会导致崩溃，如果不弹窗qa可能会漏掉一些重要的log信息。
+3. 接入SRDebugger，方便在qa测试时，在测试机查看详细的日志信息，方便定位错误出现的原因。
+4. FPS帧率的显示
+5. 游戏正式上线以后，我们很难拿到用户的错误日志，这时候我们需要把错误的日志上传到我们的服务器
+6. 当游戏崩溃时我们是拿不到unity打印的日志的，这时候就需要接入FireBase了，它可以帮我们把崩溃的详细日志上传到网页上，方便我们查看
 
 ## 框架设计里面你常用的第三方库和插件是哪些？解决哪些问题？
 
 [Unity Asset Store上优质好用的47款插件——Unity开发者必备工具（适合收藏）](https://zhuanlan.zhihu.com/p/62471100)
 
-　　1.图集检查工具、图集名字设置工具
+[Unity开发游戏时可以用到的一些插件介绍](https://zhuanlan.zhihu.com/p/114745693)
 
-　　2.ab包名字、依赖检查工具
+图集检查工具、图集名字设置工具
 
-　　3.资源导入检查设置
+ab包名字、依赖检查工具
 
-　　4.配置、服务器协议同步工具
+资源导入检查设置
 
+配置、服务器协议同步工具
 
 ## 聊聊ECS框架，面向数据的技术堆栈 (DOTS)
 
@@ -279,7 +271,10 @@ UI相机,UI相机渲染UI用正交相机。
 
 包围体层次结构（BHV）/ 八叉树
 
-## 连续碰撞检测 (CCD)
+## [连续碰撞检测 (CCD)](https://docs.unity3d.com/cn/2022.1/Manual/ContinuousCollisionDetection.html)
+
+- 基于扫掠的 CCD
+- 推断性 CCD
 
 计算量最小，从此帧到上帧的位置连一条线，检测这条线有没有碰撞检测。
 
@@ -294,9 +289,8 @@ UI相机,UI相机渲染UI用正交相机。
 
 碰撞器是触发器的载体，而触发器只是碰撞器身上的一个属性。
 
-当Is Trigger=false时，碰撞器根据物理引擎引发碰撞，产生碰撞的效果，可以调用OnCollisionEnter/Say/Exit函数；
-
-当Is Trigger=true时，碰撞器被物理引擎忽略，没有碰撞效果，可以调用OnTriggerEnter/Stay/Exit函数。
+- 当Is Trigger=false时，碰撞器根据物理引擎引发碰撞，产生碰撞的效果，可以调用OnCollisionEnter/Say/Exit函数；
+- 当Is Trigger=true时，碰撞器被物理引擎忽略，没有碰撞效果，可以调用OnTriggerEnter/Stay/Exit函数。
 
 如果既要检测到物体的接触又不想让碰撞检测影响物体移动或要检测一个物体是否经过空间中的某个区域这时就可以用到触发器。
 
@@ -371,7 +365,7 @@ Mecanim 使用类似于流程图的可视化布局系统来表示**状态机**�
 
 - 粒子动画(Particle animation)： But you'll frequently need to animate less tangible, less solid, and less physical matter, such as smoke, fire, bubbles, sparkles, smog, swarms, fireworks, clouds, and others. For these purposes, a particle system is indispensable. 
 
-# Unity 协程
+# [Unity 协程](https://docs.unity3d.com/cn/2022.1/Manual/Coroutines.html)
 
 ## 什么是协同程序？
 
@@ -464,6 +458,8 @@ Android有一个内存管理工具：Low Memory Killer，当内存不足时，�
 内存指标：RSS >= PSS >= USS
 
 ## Android/iOS平台的纹理格式分别设置成什么？有什么好处？
+
+[各平台的推荐、默认和支持的纹理压缩格式](https://docs.unity3d.com/cn/2022.1/Manual/class-TextureImporterOverride.html)
 
 [Unity纹理压缩与相关优化知识汇总](https://zhuanlan.zhihu.com/p/260761440)
 
@@ -586,17 +582,22 @@ Render Texture
 8. Add that texture as a RawImage element to the GUI on your first camera.
 9. Animate your character normally
 
-## Canvas
+## UGUI渲染细节
+
+[unity3D UI基础](https://zhuanlan.zhihu.com/p/147482988)
+
+[Unity UI优化小结](https://zhuanlan.zhihu.com/p/43111806)
+
+当使用Unity UI 制作用户界面时，记住，所有的被canvas绘制的图形都是被放在**透明渲染队列**。这意味着，Unity UI产生的图形都会使用透明混合（alpha blending）**从后向前渲染**。有一个重要的性能点要注意：**图形上的每一个像素都会被采样**，即使它被另一个不透明的图形完全覆盖。在移动设备上，大量的的过度绘制（overdraw）可以快速超出GPU填充率的上限。
+
+### Canvas
 画布 (Canvas) 组件表示进行 UI 布局和渲染的抽象空间。所有 UI 元素都必须是附加了画布组件的游戏对象的子对象。
 
 传统上，渲染 UI 的效果就好像是直接在屏幕上绘制的简单图形设计。也就是说，没有摄像机观察 3D 空间的概念。Unity 便支持这种屏幕空间渲染方式，但也允许 UI 在场景中渲染为对象，具体取决于 Render Mode 属性的值。可用的模式包括 Screen Space - Overlay、Screen Space - Camera 和 World Space。
 
-      Screen Space - Overlay：UI元素相对于屏幕空间，以2D方式显示在任何相机画面的上面。这是非常标准的 UI 风格。典型例子：大量窗口、文本和按钮的策略游戏。
-
-      Screen Space - Camera：UI元素相对于屏幕空间，由指定的相机负责显示，相机的参数影响显示的结果。你可以把 Canvas 理解为相机的子物体。典型例子：射击游戏屏幕上的 3D HUD。
-
-      World Space：UI元素相对于世界空间，和其他场景里的物体一样有世界位置、遮挡关系。通常用来做非常创新的 UI 设计。例子：游戏内的手机屏幕、与场景绑定的游戏指导等。
-
+- Screen Space - Overlay：UI元素相对于屏幕空间，以2D方式显示在任何相机画面的上面。这是非常标准的 UI 风格。典型例子：大量窗口、文本和按钮的策略游戏。
+- Screen Space - Camera：UI元素相对于屏幕空间，由指定的相机负责显示，相机的参数影响显示的结果。你可以把 Canvas 理解为相机的子物体。典型例子：射击游戏屏幕上的 3D HUD。
+- World Space：UI元素相对于世界空间，和其他场景里的物体一样有世界位置、遮挡关系。通常用来做非常创新的 UI 设计。例子：游戏内的手机屏幕、与场景绑定的游戏指导等。
 
 Canvas是Unity的一个内部组件（native-code Unity Component）。由Unity渲染系统使用，可以提供将在游戏世界空间中绘制的分层几何图形。
 
@@ -612,7 +613,6 @@ Layout components 控制RectTransform的大小和位置，通常被用来创建�
 
 **图形组件和排版组件的更新被称为重建（rebuild）。**
 
-
 ### 画布组 (Canvas Group) 
 可集中控制整组 UI 元素的某些方面，而无需单独处理每个元素。画布组的属性会影响所在的游戏对象以及所有子对象。
 
@@ -621,15 +621,6 @@ Layout components 控制RectTransform的大小和位置，通常被用来创建�
 - 通过在窗口的游戏对象上添加画布组并控制其 Alpha 属性来淡入或淡出整个窗口。
 - 通过将画布组添加到父游戏对象并将其 Interactable 属性设置为 false 来使整组控件不可交互（“灰显”）。
 - 通过在 UI 元素或其某个父元素上放置画布组 (Canvas Group) 组件并将其 Block Raycasts 属性设置为 false 来使一个或多个 UI 元素不阻止鼠标事件。
-
-## UGUI渲染细节
-
-[unity3D UI基础](https://zhuanlan.zhihu.com/p/147482988)
-
-[Unity UI优化小结](https://zhuanlan.zhihu.com/p/43111806)
-
-当使用Unity UI 制作用户界面时，记住，所有的被canvas绘制的图形都是被放在**透明渲染队列**。这意味着，Unity UI产生的图形都会使用透明混合（alpha blending）**从后向前渲染**。有一个重要的性能点要注意：**图形上的每一个像素都会被采样**，即使它被另一个不透明的图形完全覆盖。在移动设备上，大量的的过度绘制（overdraw）可以快速超出GPU填充率的上限。
-
 
 ### 合批过程（Canvases）
 合批过程是指Canvas合并UI元素的网格，并且生成发送给Unity渲染管线的命令。这个过程产生的结果会被缓存住，直到他们被重新标记为dirty，组成它的任何一个网格变化都会使其变为dirty。
@@ -743,11 +734,11 @@ UI的隐藏我们可以使用将其移到Canvas外的方法，而不是利用Set
 - UI的批处理
 如果UI元素会改变数值或是位置，会影响批处理，导致向GPU发送更多的drawcall。因此建议：
 
-将更新频率不同的UI放在不同的Canvas上。
+      相同Canvas中的UI元素的Z值要相同，这样才不会打断批处理。
+      相同Canvas中的UI元素要使用相同的材质和纹理，材质或着色器可以有动态变换（例如一些特效），这不会影响批处理。
+      相同Canvas中的UI元素要使用相同裁剪矩阵。
 
-    相同Canvas中的UI元素的Z值要相同，这样才不会打断批处理。
-    相同Canvas中的UI元素要使用相同的材质和纹理，材质或着色器可以有动态变换（例如一些特效），这不会影响批处理。
-    相同Canvas中的UI元素要使用相同裁剪矩阵。
+- 将更新频率不同的UI放在不同的Canvas上。
 
 - Graphic Raycaster
 
