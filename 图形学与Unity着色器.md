@@ -102,7 +102,9 @@
   - [光线和平面的交点](#光线和平面的交点)
   - [如何判断是凸多边形还是凹多边形](#如何判断是凸多边形还是凹多边形)
   - [AABB包围盒 OBB包围盒](#aabb包围盒-obb包围盒)
-
+- [资料](#资料)
+  - [《Unity Shader入门精要》](#unity-shader入门精要)
+  - [Shader Tutorials by Ronja](#shader-tutorials-by-ronja)
 
 # 3D数学
 
@@ -135,6 +137,8 @@
 不限长度的向量b在**单位**向量a方向上的**有符号**投影，点积的符号可以让我们知道两个矢量的方向关系。
 
 ## 叉积
+[叉积 - 维基百科](https://zh.wikipedia.org/wiki/%E5%8F%89%E7%A7%AF)
+
 叉积不满足交换律。
 
 aXb的长度等于a和b的模的乘积再乘以它们之间夹角的**正弦值**。
@@ -391,6 +395,8 @@ _WorldSpaceCameraPos
 ## 球谐光照的理解
 球谐光照在现代游戏图形渲染领域应用很广，用于快速的模拟复杂的实时光照，例如unity中的light probe以及一些不重要的实时光源，可以用球谐光照快速的计算。球谐光照的优点是运行时的计算量与光源的数量无关，如果参数足够却可以较好的模拟实时的光照结果。
 
+[球谐光照入门简介](https://www.jianshu.com/p/d8d79401525f)“？？？？？？”
+
 ## 光源的5个属性
 位置
 
@@ -548,6 +554,7 @@ Mipmap技术有点类似于LOD技术，但是不同的是，LOD针对的是模�
 命令缓冲允许我们扩展Unity的渲染流水线。使用命令缓冲我们可以得到类似抓屏的效果，它可以在不透明物体渲染之前把当前的图像复制到一个临时的渲染目标纹理中，然后在那里进行一些额外的操作。
 
 ## 深度纹理
+
 深度纹理实际上就是一张渲染纹理，存储的是高精度的深度值。由于被存储在一张纹理中，深度纹理里的深度值范围是[0,1]，而且通常是非线性分布的。这些深度值来源于顶点变换后得到的归一化设备坐标。
 
 统一的深度纹理采样宏：SAMPLE_DEPTH_TEXTURE()
@@ -557,6 +564,10 @@ LinearEyeDepth()负责把深度纹理的采样结果转换到视角空间下的�
 Linear01Depth会返回一个范围在[0,1]的线性深度值。
 
 解码深度+法线信息：DecodeDepthNormal()
+
+这里介绍得很详细。[LearnOpenGL - Depth testing](https://learnopengl.com/Advanced-OpenGL/Depth-testing)
+
+[Custom shaders with depth sampling](https://www.edraflame.com/blog/custom-shader-depth-texture-sampling/)
 
 ## 噪声纹理
 
@@ -688,6 +699,8 @@ The idea is that we sample the texture at multiple spots around the uv point and
 >[Object Outlines](https://www.ronja-tutorials.com/post/052-object-outline/)
 
 It uses the same base idea of sampling neighboring pixels as the sprite based one, but can be applied to 3d models. It uses a postprocessing effect, yet can be applied to distinct objects you choose. Because of those properties this technique is mostly useful to show selected objects in 3d contexts.
+
+>[Edge Detection Outlines](https://alexanderameye.github.io/notes/edge-detection-outlines/)
 
 # 渲染优化技术
 
@@ -938,3 +951,13 @@ if(a.max.z <= b.min.z) return false;
 
 return true;
 ```
+
+# 资料
+## 《Unity Shader入门精要》
+
+[源代码](https://github.com/candycat1992/Unity_Shaders_Book)
+
+## [Shader Tutorials by Ronja](https://www.ronja-tutorials.com/)
+很“基础”的shaderlab教程，
+
+这里是教程源代码[ronja-tutorials/ShaderTutorials](https://github.com/ronja-tutorials/ShaderTutorials)

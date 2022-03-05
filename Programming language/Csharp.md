@@ -76,7 +76,8 @@
   - [AOT 编译器](#aot-编译器)
   - [文件I/O](#文件io)
   - [序列化与反序列化](#序列化与反序列化)
-  - [Unity3D中序列化注意事项 Pure C# Class](#unity3d中序列化注意事项-pure-c-class)
+    - [Unity3D中序列化注意事项 Pure C# Class](#unity3d中序列化注意事项-pure-c-class)
+  - [Hash表的原理是什么, 如何实现?](#hash表的原理是什么-如何实现)
   - [拓展方法](#拓展方法)
   - [反射Reflection](#反射reflection)
   - [反射的实现原理？](#反射的实现原理)
@@ -689,8 +690,12 @@ C# 等较高级的 .NET 语言编译为称为中间语言 (IL) 的硬件无关�
 
 这两个过程结合起来，可以轻松地存储和传输数据。
 
-## Unity3D中序列化注意事项 Pure C# Class
+### Unity3D中序列化注意事项 Pure C# Class
 > C#原生类型没法直接显示在编辑器中，必须添加个[System.Serializable]特性
+
+## Hash表的原理是什么, 如何实现?
+
+[C# 学习笔记：散列与哈希](https://blog.csdn.net/qq_38601621/article/details/100350691)
 
 ## 拓展方法
 对于定义好的类进行拓展，比如String和Int类，但是拓展类和方法都应该是静态的。
