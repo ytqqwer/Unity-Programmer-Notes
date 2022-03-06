@@ -231,7 +231,7 @@ userdata是用户自定义的数据类型，lua只提供了一块原始的内存
 
 ## thread类型
 再三强调，lua的线程并不是操作系统中的线程！！！它是lua和c/c++进行交互的一个数据结构lua_stack，lua通过这个数据结构和c进行交互，来调用上文中的那些库函数。
-![lua_thread](image/lua%20thread.png)
+![lua_thread](../image/lua%20thread.png)
 对于lua_Stack的研究同样太长，只需要记住它是c和lua之间交互的堆栈即可。
 
 # pairs和ipairs的区别
@@ -241,11 +241,11 @@ userdata是用户自定义的数据类型，lua只提供了一块原始的内存
 
 pairs迭代映射+数组，能返回表中所有的键值对但是无序，上文中说lua中存放键值对的表像c++中的无需图unorder_map也是基于这个原因，因为普通的map是用红黑树做底层，使用迭代器输出所有的键值都是有序的。
 
-![lua_pairs](image/lua%20pairs.png)
+![lua_pairs](../image/lua%20pairs.png)
 
 Ipairs迭代的是数组，遇到空值会停止，但是输出的是有序的
 
-![lua_ipairs](image/lua%20pairs.png)
+![lua_ipairs](../image/lua%20pairs.png)
 
 对于上述序列例子我们可以用for循环方式来代替
 
@@ -328,7 +328,7 @@ print(child.a)
 
 如果__newindex字段指向一个表，那么就会对该表创建这个字段，且对本表创建不成功。
 
-![lua___newindex](image/lua%20__newindex.png)
+![lua___newindex](../image/lua%20__newindex.png)
 我们可以看到，当我们输出myTable.c时，lua是找不到这个值的，因为实际上是给__nexindex指向的yourTable给赋值。那为什么还是nil呢？从结果我们可以看到，其实这个3我们是赋值给了yourTable.c, 虽然yourTbale已经被赋值，但是访问是__index字段的事，myTable并不能访问得到yourTable的值。
 
 总结来说，就是只要存在__nexindex字段，那么就不会对本表新建值。
@@ -339,7 +339,7 @@ print(child.a)
 ___
 我们可以通过对表设置__index和__newindex字段来把一个表定义成常量表
 
-![lua_const_table](image/lua%20const%20table.png)
+![lua_const_table](../image/lua%20const%20table.png)
 
 ## __call
 ___
@@ -347,7 +347,7 @@ __call 元方法在 Lua 调用一个值时调用。
 
 比如说我们的myTable和yourTable都是一个序列（num类型的），我想求出这两个序列的总和
 
-![lua___call](image/lua%20__call.png)
+![lua___call](../image/lua%20__call.png)
 
 这个时候可能有同学会问：搞那么复杂干嘛咧，我们直接先遍历一遍myTable，再遍历一遍yourTable不就好了吗？或者说我直接在myTable中添加一个新的函数字段，实现同样的功能不也一样吗？
 
@@ -360,7 +360,7 @@ __tostring 元方法用于修改表的输出行为 ,如果我们直接print()一
 
 而如果我们通过设置其元表的__tostring字段，那么返回的就是__tostring指向的结果。
 
-![lua___string](image/lua%20__string.png)
+![lua___string](../image/lua%20__string.png)
 
 比如上面的例子就是输出自己的序列和，记住__tostring返回的是一个字符串，不然会报错。
 
@@ -382,7 +382,7 @@ __tostring 元方法用于修改表的输出行为 ,如果我们直接print()一
 
 上文提到函数是闭包的一部分，那么简而言之，如果访问到外部的非全局变量，那么数组则不为空。若没有访问到非全局变量(普通函数),那么闭包中的数组就为空。而且该数组对于这些非全局变量会复制在upValue中，因此闭包与闭包之间是的非全局遍历不会相互影响
 
-![lua_closure](image/lua%20closure.png)
+![lua_closure](../image/lua%20closure.png)
 
 
 # 类使用：和.的区别
@@ -441,12 +441,12 @@ Lua 协同程序(coroutine)与线程(这里的线程指的是操作系统的线�
 一个多线程程序可以同时运行几个线程（并发执行、抢占），而协程却需要彼此协作地运行，并非真正的多线程，即一个多协程程序在同一时间只能运行一个协程，并且正在执行的协程只会在其显式地要求挂起（suspend）时，它的执行才会暂停（无抢占、无并发）。协同程序有点类似同步的多线程，在等待同一个线程锁的几个线程有点类似协同程序。
 
 ## 协程的用法
-![lua_coroutine](image/lua%20coroutine.png)
+![lua_coroutine](../image/lua%20coroutine.png)
 
 coroutine.running就可以看出来,coroutine在底层实现就是一个线程，当create一个coroutine的时候就是在新线程中注册了一个事件。
 
 resume和yield的协作是Lua协程的核心
-![lua_yield](image/lua%20yield.png)
+![lua_yield](../image/lua%20yield.png)
 
 举一个经典生产者消费者例子：创建一个生产工厂，让它生产20件产品，每生产一件就把协程挂起，等待客户下一次提交需求的时候才重新resume唤醒。
 
