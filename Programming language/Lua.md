@@ -6,7 +6,7 @@
   - [function类型](#function类型)
   - [string类型](#string类型)
     - [字符串的常用方式：](#字符串的常用方式)
-  - [## table类型](#-table类型)
+  - [table类型](#table类型)
   - [userdata类型](#userdata类型)
   - [thread类型](#thread类型)
 - [pairs和ipairs的区别](#pairs和ipairs的区别)
@@ -189,7 +189,7 @@ string.lower(stringName) -- 字符串小写
 
 
 ## table类型
----
+
 表是Lua语言中最强大也是唯一的数据结构。使用表，Lua语言可以以一种简单，统一且高效的方式表示数组，集合，记录和其他很多的数据结构。
 
 Lua语言中的表本质是一种辅助数组，这种数组不仅可以通过数字下标作为索引，也可以通过使用字符串或其他任意类型的值来映射相对应的值（键值对）。

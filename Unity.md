@@ -446,11 +446,14 @@ C#中的迭代器方法其实就是一个协程，你可以使用yield来暂停�
 
 ## [Unity如何统计安卓PSS内存？](https://zhuanlan.zhihu.com/p/372883142)
 
-PSS- Proportional Set Size 实际使用的物理内存（比例分配共享库占用的内存）
+- VSS- Virtual Set Size 虚拟耗用内存（包含共享库占用的内存）
+- RSS- Resident Set Size 实际使用物理内存（包含共享库占用的内存）
+- PSS- Proportional Set Size 实际使用的物理内存（比例分配共享库占用的内存）
+- USS- Unique Set Size 进程独自占用的物理内存（不包含共享库占用的内存）
 
 Android有一个内存管理工具：Low Memory Killer，当内存不足时，会清理内存，在Android上常见的一些后台app消失，一些手机服务消失，手机重启或者是app崩溃闪退等都和它有关。
 
-内存指标：RSS >= PSS >= USS
+一般来说内存占用大小有如下规律：VSS >= RSS >= PSS >= USS
 
 ## Android/iOS平台的纹理格式分别设置成什么？有什么好处？
 
@@ -498,20 +501,31 @@ Unity支持许多图片格式的源文件，但是3D图形的实时渲染中不�
 ## Unity渲染顺序
 
 [Unity渲染顺序总结](https://www.jianshu.com/p/0341f0ab9020)
+```
+1.Camera Depth: 越小越优先
+2.RenderQueue 2500以下
+    1. Sorting Layer/Order in Layer
+           1. 按照Sorting Layer/Order in Layer 设置的值，越小越优先
+           2. 无此属性，等同于 Sorting Layer=default ,Order in Layer=0 参与排序
+     2.RenderQueue 越小越优先
+     3.RenderQueue 相等，由近到远排序优先
+3.RenderQueue 2500以上
+     1. Sorting Layer/Order in Layer
+           1. 按照Sorting Layer/Order in Layer 设置的值，越小越优先
+           2. 无此属性，等同于 Sorting Layer=default ,Order in Layer=0 参与排序
+     2.RenderQueue 越小越优先
+     3.RenderQueue 相等，
+```
+
+
+
+### UGUI渲染顺序
 
 [对unity UI层级的一些思考](https://zhuanlan.zhihu.com/p/344773681)
 
-Camera->RenderQueue->深度->sortingLayer->sortingOrder
-
-按默认管线来说，camera的depth为最高，depth值越大，越在前面。
-
-然后是RenderQueue，在逻辑上将渲染的物体分成几个大类。内部对不同类型有不同策略，透明从后往前，不透明从前往后。
-
-最终Renderer基类的sortingLayer和sortingOrder决定每个render的提交顺序。
+按默认管线来说，camera的depth为最高，depth值越大，越在前面。然后是RenderQueue，在逻辑上将渲染的物体分成几个大类。内部对不同类型有不同策略，透明从后往前，不透明从前往后。最终Renderer基类的sortingLayer和sortingOrder决定每个render的提交顺序。
 
 对于UI来说，都是透明渲染，所以sortingOrder就是最关键的参数了。
-
-### UGUI渲染顺序
 
 依次由Render Camera的Depth值、Sorting  Layer先后顺序、Order in Layer值决定
 
@@ -1143,6 +1157,8 @@ Unity的垃圾回收器有3种模式：
 
 虽然文件GUID和本地ID是具有健壮性的，但GUID比较速度较慢，运行时需要更高性能的系统，Unity内部维护一个缓存（内部叫做PersistentManager），将文件GUID和本地ID转换为简单的，唯一的整数，这个就是Instance ID，并且在新对象向缓存注册时，会以简单递增的方式分配。
 
+PersistentManager会维护Instance ID和File GUID 、Local ID的映射关系，定位Object源数据的位置以及维护内存中（如果有的话）Object的实例。只要系统解析到一个 Instance ID，就能快速找到代表这个Instance ID的已加载的对象。如果Object没有被加载的话，File GUID 和 Local ID也可以快速的定位到指定的Asset资源从而即时进行资源加载。
+
 ### 资源的生命周期
 
 Object加载
@@ -1155,11 +1171,11 @@ Object在满足下列条件的情况时会自动加载，比如：
 
 Object卸载
 
-    当未使用的资产开始清理时，对象将自动卸载，当场景被强制切换（即SceneManager.LoadScene被非增加式的调用时），或者脚本调用Resources.UnloadUnusedAssets时，这个过程会被自动出发，此功能只卸载没有被Mono变量引用和其他对象引用的对象，不过请注意，被标为HideFlags.DontUnloadUnusedAsset和HideFlags.HideAndDontSave的对象不会被卸载
+- 当未使用的资产开始清理时，对象将自动卸载，当场景被强制切换（即SceneManager.LoadScene被非增加式的调用时），或者脚本调用Resources.UnloadUnusedAssets时，这个过程会被自动触发，此功能只卸载没有被Mono变量引用和其他对象引用的对象，不过请注意，被标为HideFlags.DontUnloadUnusedAsset和HideFlags.HideAndDontSave的对象不会被卸载
 
-    可以用过调用Resources.UnloadAsset显式卸载Resources文件夹中的资产，被卸载的对象的Instance ID仍然是有效的，并且依然包含有效的文件GUID和本地ID，如果任何变量或其他对象持有使用Resources.UnloadAsset卸载过的对象，如果这些引用被引用，对象会被重新加载
+- 可以用过调用Resources.UnloadAsset显式卸载Resources文件夹中的资产，被卸载的对象的Instance ID仍然是有效的，并且依然包含有效的文件GUID和本地ID，如果任何变量或其他对象持有使用Resources.UnloadAsset卸载过的对象，如果这些引用被引用，对象会被重新加载
 
-    来自于AssetBundle的对象，可以用过调用AssetBundle.Unload(true)，立即自动卸载，这会使对象Instance ID和文件GUID和本地ID变为无效，如果一个对象引用了它，那么这个对象会变为Missing状态。C#中如果有访问未加载的对象的方法或属性，会产生空指针异常。
+- 来自于AssetBundle的对象，可以用过调用AssetBundle.Unload(true)，立即自动卸载，这会使对象Instance ID和文件GUID和本地ID变为无效，如果一个对象引用了它，那么这个对象会变为Missing状态。C#中如果有访问未加载的对象的方法或属性，会产生空指针异常。
 
 ### 如何安全的在不同工程间安全地迁移asset数据？三种方法
 1.将Assets目录和Library目录一起迁移
