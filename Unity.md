@@ -12,7 +12,7 @@
   - [Unity项目框架是如何设计的？有哪些原则?](#unity项目框架是如何设计的有哪些原则)
   - [资源管理的平台，版本，渠道是如何管理的？](#资源管理的平台版本渠道是如何管理的)
   - [项目框架是如何让美术，策划，程序愉快的工作的？](#项目框架是如何让美术策划程序愉快的工作的)
-  - [Unity如何避免多人提交代码冲突？多人协作模式。](#unity如何避免多人提交代码冲突多人协作模式)
+  - [Unity如何避免多人提交代码冲突？多人协作模式](#unity如何避免多人提交代码冲突多人协作模式)
   - [真机调试，看打印日志你是如何处理的？](#真机调试看打印日志你是如何处理的)
   - [框架设计里面你常用的第三方库和插件是哪些？解决哪些问题？](#框架设计里面你常用的第三方库和插件是哪些解决哪些问题)
   - [聊聊ECS框架，面向数据的技术堆栈 (DOTS)](#聊聊ecs框架面向数据的技术堆栈-dots)
@@ -44,9 +44,10 @@
   - [Unity如何统计安卓PSS内存？](#unity如何统计安卓pss内存)
   - [Android/iOS平台的纹理格式分别设置成什么？有什么好处？](#androidios平台的纹理格式分别设置成什么有什么好处)
 - [Unity UI](#unity-ui)
+  - [UGUI源码分析](#ugui源码分析)
   - [请简述如何在不同分辨率下保持UI的一致性](#请简述如何在不同分辨率下保持ui的一致性)
   - [UGUI消息传递机制](#ugui消息传递机制)
-  - [UI动画实现方案:](#ui动画实现方案)
+  - [UI动画实现方案](#ui动画实现方案)
   - [Unity渲染顺序](#unity渲染顺序)
     - [UGUI渲染顺序](#ugui渲染顺序)
     - [UI上粒子效果如何实现](#ui上粒子效果如何实现)
@@ -85,6 +86,7 @@
     - [Memory allocator customization](#memory-allocator-customization)
     - [garbage collection](#garbage-collection)
 - [资源](#资源)
+  - [Unity资源管理 看完这张图你就全知道了](#unity资源管理-看完这张图你就全知道了)
   - [资产](#资产)
     - [Instance ID](#instance-id)
     - [资源的生命周期](#资源的生命周期)
@@ -113,7 +115,6 @@
   - [Addressables](#addressables)
   - [Unity-Technologies AssetBundles-Browser](#unity-technologies-assetbundles-browser)
 
-
 # 基础知识
 
 ## UnityEvent
@@ -121,6 +122,7 @@
 借助 UnityEvent 可让用户驱动的回调从编辑时间一直持续到运行时，无需进行额外的编程和脚本配置。
 
 UnityEvent 对许多方面都很有用：
+
 - 内容驱动的回调
 - 解耦系统
 - 持久回调
@@ -131,14 +133,17 @@ UnityEvent 可添加到任何 MonoBehaviour，并从标准 .net 委托之类的�
 UnityEvent 与标准委托有类似的限制。也就是说，它们会保留对目标元素的引用，而这会阻止对目标进行垃圾收集。如果将 UnityEngine.Object 作为目标，而本机表示消失，则不会调用回调。
 
 ## 简述一下对象池，你觉得在FPS里哪些东西适合使用对象池
+
 对象池就存放需要被反复调用资源的一个空间，当一个对象回大量生成的时候如果每次都销毁创建会很费时间，通过对象池把暂时不用的对象放到一个池中（也就是一个集合），当下次要重新生成这个对象的时候先去池中查找一下是否有可用的对象，如果有的话就直接拿出来使用，不需要再创建，如果池中没有可用的对象，才需要重新创建，利用空间换时间来达到游戏的高速运行效果，在FPS游戏中要常被大量复制的对象包括子弹，敌人，粒子等
 
 ## [MenuItem] 什么意思?
+
 MenuItem 属性用于向主菜单和检视面板上下文菜单添加菜单项。
 
 该 MenuItem 属性能够将任何静态函数转变为菜单命令。仅静态函数可使用 MenuItem 属性。
 
 ## Image与Raw Image的区别?
+
 图像控件要求其纹理为精灵，而原始图像可以接受任何纹理。
 
 由于原始图像不需要精灵纹理，因此可以使用这种图像来显示 Unity 播放器可用的任何纹理。例如，可使用 WWW 类显示从 URL 下载的图像，或显示来自游戏对象的纹理。
@@ -146,9 +151,11 @@ MenuItem 属性用于向主菜单和检视面板上下文菜单添加菜单项�
 UV Rectangle 属性允许显示较大图像的一小部分。X 和 Y 坐标指定图像的哪个部分与控件的左下角对齐。例如，X 坐标为 0.25 将会截断图像的最左边四分之一。W 和 _H_（即宽度和高度）属性指示了要进行缩放来适应控件矩形的图像部分的宽度和高度。例如，宽度和高度为 0.5 将会将图像区域放大四分之一来适应控件矩形。通过更改这些属性，即可根据需要缩放图像。
 
 ## Unity如何实现游戏截图？
+
 [ScreenCapture](https://docs.unity3d.com/cn/2021.2/ScriptReference/ScreenCapture.html)
 
 ## 预设(prefab)的用处
+
 Prefab是预设体，在实例化的时候用到，主要用于经常会用到的物体，属性方便修改。
 
 在游戏运行时实例化，Prefab相当于一个模板，对已经有的素材、脚本、参数做一个默认的配置，以便于以后的修改，同时Prefab打包的内容简化了导出的操作，便于团队的交流。
@@ -158,16 +165,18 @@ Prefab是预设体，在实例化的时候用到，主要用于经常会用到�
 3.当你在一个场景中增加一个Prefabs，你就实例化了一个Prefabs。
 
 ## 请简述OnBecameVisible及OnBecameInvisible的发生时机，以及这一对回调函数的意义？
+
 当物体是否可见切换之时。可以用于只需要在物体可见时才进行的计算。
 
 ## 在编辑场景时将GameObject设置为Static有何作用？
+
 设置游戏对象为Static时，这些部分被静态物体挡住而不可见时，将会剔除（或禁用）网格对象。因此，在你的场景中的所有不会动的物体都应该标记为Static。
 
 ## DestroyImmediate和Destroy的区别是？
+
 DestroyImmeditate 销毁对象的时候，会立即释放资源。Destroy只是从该场景销毁，但是还在内存当中。
 
 DestroyImmeditate 函数应只在编写 Editor 代码时使用，因为在编辑模式下， 永远不会调用延迟销毁。 在游戏代码中，您应该改用 Object.Destroy。Destroy 始终延迟进行 （但在同一帧内执行）。 使用该函数时要务必小心，因为它可以永久销毁资源！ 另请注意，切勿循环访问数组并销毁正在迭代的元素。这会导致严重的问题（这是一条通用的编程实践，而不仅仅是在 Unity 中）。
-
 
 # 框架设计
 
@@ -178,8 +187,10 @@ DestroyImmeditate 函数应只在编写 Editor 代码时使用，因为在编辑
 [unity游戏框架学习-框架结构](https://www.cnblogs.com/wang-jin-fu/p/10975660.html)
 
 ## 资源管理的平台，版本，渠道是如何管理的？
+
 ## 项目框架是如何让美术，策划，程序愉快的工作的？
-## Unity如何避免多人提交代码冲突？多人协作模式。
+
+## Unity如何避免多人提交代码冲突？多人协作模式
 
 [Unity中的Git最佳实践](https://blog.csdn.net/zhenghongzhi6/article/details/87889058)
 
@@ -191,6 +202,7 @@ DestroyImmeditate 函数应只在编写 Editor 代码时使用，因为在编辑
 美术人员输出了UI资源，原画，特效等传到ftp通知程序具体路径，程序从FTP拷贝资源到UnityUI资源文件夹，为了版本一致，程序同学可能需要对它进行重命名，才用上了一张新资源。
 
 ## 真机调试，看打印日志你是如何处理的？
+
 [unity游戏框架学习-日志系统](https://www.cnblogs.com/wang-jin-fu/p/11263310.html)
 
 1. 日志开关。只有开发版本开启日志,因为日志还是比较耗性能的。
@@ -233,6 +245,7 @@ ComponentSystem为System在Unity ECS中的实现。一个ComponentSystem会对�
 # 摄像机
 
 ## 摄像机有几种模式，成像原理分别是什么？
+
 - Perspective：摄像机将以完整透视角度渲染对象。
 - Orthographic：摄像机将均匀渲染对象，没有透视感。注意：在正交模式下不支持延迟渲染。始终使用前向渲染。
 
@@ -252,8 +265,8 @@ UI相机,UI相机渲染UI用正交相机。
 
 深度相机,根据需求设置的, 可以通过设置深度保证某些对象一直在最前面显示
 
-
 # 物理
+
 ## Unity碰撞检测原理
 
 [深入理解Unity的碰撞检测机制](https://www.jianshu.com/p/988865b02019)
@@ -279,7 +292,6 @@ UI相机,UI相机渲染UI用正交相机。
 
 [碰撞体](https://docs.unity3d.com/cn/2021.2/Manual/CollidersOverview.html)
 
-
 ## Unity3d中的碰撞器和触发器的区别？
 
 碰撞器是触发器的载体，而触发器只是碰撞器身上的一个属性。
@@ -292,20 +304,22 @@ UI相机,UI相机渲染UI用正交相机。
 消息|描述
 ------------ | -------------
 OnCollisionEnter |当该碰撞体/刚体已开始接触另一个刚体/碰撞体时，调用 OnCollisionEnter。
-OnCollisionExit	|当该碰撞体/刚体已停止接触另一个刚体/碰撞体时，调用 OnCollisionExit。
-OnCollisionStay	|OnCollisionStay is called once per frame for every Collider or Rigidbody that touches another |Collider or Rigidbody.
-OnTriggerEnter	|GameObject 与另一个 GameObject 碰撞时，Unity 会调用 OnTriggerEnter。
+OnCollisionExit |当该碰撞体/刚体已停止接触另一个刚体/碰撞体时，调用 OnCollisionExit。
+OnCollisionStay |OnCollisionStay is called once per frame for every Collider or Rigidbody that touches another |Collider or Rigidbody.
+OnTriggerEnter |GameObject 与另一个 GameObject 碰撞时，Unity 会调用 OnTriggerEnter。
 OnTriggerExit |当 Collider other 已停止接触该触发器时调用 OnTriggerExit。
-OnTriggerStay	|对于正在接触该触发器的每个其他 Collider，“几乎”所有帧都调用 OnTriggerStay。此函数位于物理计时器上，因此它不必运行每个帧。
+OnTriggerStay |对于正在接触该触发器的每个其他 Collider，“几乎”所有帧都调用 OnTriggerStay。此函数位于物理计时器上，因此它不必运行每个帧。
 
 ## 射线检测碰撞物
+
 [Unity最佳实践-物理最佳实践](https://blog.csdn.net/greedylin/article/details/80645860)
 
 射线是3D世界中一个点向一个方向发射的一条无终点的线，在发射轨迹中与其他物体发生碰撞时，它将停止发射。
 注意这条线是逻辑上的，界面上看不到。一般使用射线判断是否发射至某个游戏对象上或者获得鼠标点击的游戏对象等。
 
 射线是从摄像机发出去的。
-```
+
+```csharp
 Ray ray=Camera.main.ScreenPointToRay(Input.mousePosition);
 if(Physics.Raycast(ray,out hit))//如果命中
 {
@@ -315,9 +329,11 @@ if(Physics.Raycast(ray,out hit))//如果命中
 ```
 
 ## 物理更新一般放在哪个系统函数里
+
 FixedUpdate，每固定帧绘制时执行一次，和Update不同的是FixedUpdate是渲染帧执行，如果你的渲染效率低下的时候FixedUpdate调用次数就会跟着下降。FixedUpdate比较适用于物理引擎的计算，因为是跟每帧渲染有关。Update就比较适合做控制。
 
 ## 什么叫做链条关节？
+
 铰链关节 (Hinge Joint) 将两个刚体组合在一起，对刚体进行约束，让它们就像通过铰链连接一样移动。铰链关节非常适合用于门，但也可用于模拟链条、钟摆等对象。
 
 ## CharacterController和Rigidbody的区别
@@ -328,7 +344,6 @@ CharacterController 不受力影响，仅在您调用 **Move** 函数时才会�
 
 Rigidbody具有完全真实物理的特性，Unity中物理系统最基本的一个组件，包含了常用的物理特性，而CharacterController可以说是受限的的Rigidbody，具有一定的物理效果但不是完全真实的。
 主要用于第三人称玩家控制或者是不使用刚体物理组件的第一人称玩家控制。
-
 
 ## MeshCollider和其他Collider的一个主要不同点？
 
@@ -341,24 +356,26 @@ Rigidbody具有完全真实物理的特性，Unity中物理系统最基本的一
 # 动画
 
 ## 动画状态机驱动的是什么
+
 Mecanim 使用类似于流程图的可视化布局系统来表示**状态机**，从而控制需要在角色或对象上使用的动画剪辑并对这些动画剪辑排序。
 
 ## Animation中Curves如何使用
+
 切换至Curves后，可以添加Property,通过选择不同的属性，在视图中添加Key点修改函数曲线，从而实现物体的各种动画效果、颜色渐变等
 
 ## 请描述游戏动画有哪几种，以及其原理？
 
 - 精灵动画(Sprite animation)：It takes a sequence of images or frames and plays them in order at a specified frame rate to achieve a consistent and animated look,
 
-- 刚体动画/关键帧动画(Rigid body animation)：Rigid body animation is used to create pre-made animation sequences that move or change the properties of objects. Thus, in rigid body animation, changes across key frames apply to whole objects and their highest level properties. 
+- 刚体动画/关键帧动画(Rigid body animation)：Rigid body animation is used to create pre-made animation sequences that move or change the properties of objects. Thus, in rigid body animation, changes across key frames apply to whole objects and their highest level properties.
 
 - 骨骼动画(Rigged or bone-based animation)：Typically, bone-based animation is created as a complete animation sequence in 3D modeling software and is imported to Unity inside a mesh file.
 
-- 顶点变形动画(Morph animation)：Essentially, this method relies on snapshots of a mesh's vertices across key frames in an animation, and blends between the states via tweens. The downside to this method is its computational expense. It's typically performance intensive, but its results can be impressive and highly realistic. 
+- 顶点变形动画(Morph animation)：Essentially, this method relies on snapshots of a mesh's vertices across key frames in an animation, and blends between the states via tweens. The downside to this method is its computational expense. It's typically performance intensive, but its results can be impressive and highly realistic.
 
 - 物理动画(Physics-based animation)：You need animation that appears realistic and yet responds to its world dynamically, based on decisions made by the player and other variable factors of the world that cannot be predicted ahead of time.
 
-- 粒子动画(Particle animation)： But you'll frequently need to animate less tangible, less solid, and less physical matter, such as smoke, fire, bubbles, sparkles, smog, swarms, fireworks, clouds, and others. For these purposes, a particle system is indispensable. 
+- 粒子动画(Particle animation)： But you'll frequently need to animate less tangible, less solid, and less physical matter, such as smoke, fire, bubbles, sparkles, smog, swarms, fireworks, clouds, and others. For these purposes, a particle system is indispensable.
 
 # [Unity 协程](https://docs.unity3d.com/cn/2022.1/Manual/Coroutines.html)
 
@@ -472,6 +489,7 @@ Unity支持许多图片格式的源文件，但是3D图形的实时渲染中不�
 选择纹理压缩格式的策略
 
 我们的思路是让需要展示出高品质的纹理占用更多的资源，让那些没必要展示高品质的纹理占用更少的资源；
+
 - 尽量避免RGBA32和ARGB32纹理的使用，因为这种格式一般属于高清晰的，但也比较耗；
 - RGBA16格式的加载效率也很高，接近于ETC1/PVRTC，设备越好，差距越小，因此在ETC1/PVRTC的效果不够好时，可以尝试用RGBA16；
 - UI贴图要注意Mipmap和read&write属性的设置；
@@ -480,17 +498,23 @@ Unity支持许多图片格式的源文件，但是3D图形的实时渲染中不�
 
 # Unity UI
 
+## UGUI源码分析
+
+[UGUI源码分析：系统总结UGUI的全部内容](https://blog.csdn.net/qq_28820675/article/details/106391292)
+
+[Unity UGUI 源码分析系列（完结）](https://blog.csdn.net/qq_28820675/article/details/105619250)
+
 ## 请简述如何在不同分辨率下保持UI的一致性
 
 使用锚点来适应不同的宽高比
 
-在画布缩放器 (Canvas Scaler)组件中，可将其 UI Scale Mode 设置为 Scale With Screen Size。使用此缩放模式，可以指定要用作参考的分辨率。如果当前屏幕分辨率小于或大于此参考分辨率，则会相应设置画布的缩放因子，使所有 UI 元素都与屏幕分辨率一起放大或缩小。 
+在画布缩放器 (Canvas Scaler)组件中，可将其 UI Scale Mode 设置为 Scale With Screen Size。使用此缩放模式，可以指定要用作参考的分辨率。如果当前屏幕分辨率小于或大于此参考分辨率，则会相应设置画布的缩放因子，使所有 UI 元素都与屏幕分辨率一起放大或缩小。
 
 ## [UGUI消息传递机制](https://blog.csdn.net/fansongy/article/details/82079639)
 
 [事件系统](https://docs.unity3d.com/cn/2022.1/Manual/EventSystem.html)
 
-## UI动画实现方案:
+## UI动画实现方案
 
 1.帧动画方式实现: 将UI动画每一帧都制作成贴图, 然后在UI身上挂载脚本, 通过修改UI身上的图片来达到动画效果
 
@@ -501,23 +525,22 @@ Unity支持许多图片格式的源文件，但是3D图形的实时渲染中不�
 ## Unity渲染顺序
 
 [Unity渲染顺序总结](https://www.jianshu.com/p/0341f0ab9020)
-```
-1.Camera Depth: 越小越优先
-2.RenderQueue 2500以下
-    1. Sorting Layer/Order in Layer
-           1. 按照Sorting Layer/Order in Layer 设置的值，越小越优先
-           2. 无此属性，等同于 Sorting Layer=default ,Order in Layer=0 参与排序
-     2.RenderQueue 越小越优先
-     3.RenderQueue 相等，由近到远排序优先
-3.RenderQueue 2500以上
-     1. Sorting Layer/Order in Layer
-           1. 按照Sorting Layer/Order in Layer 设置的值，越小越优先
-           2. 无此属性，等同于 Sorting Layer=default ,Order in Layer=0 参与排序
-     2.RenderQueue 越小越优先
-     3.RenderQueue 相等，
-```
 
+- Camera Depth: 越小越优先
 
+- RenderQueue 2500以下：
+  - Sorting Layer/Order in Layer
+    - 按照Sorting Layer/Order in Layer 设置的值，越小越优先
+    - 无此属性，等同于 Sorting Layer=default ,Order in Layer=0 参与排序
+  - RenderQueue 越小越优先
+  - RenderQueue 相等，由近到远排序优先
+
+- RenderQueue 2500以上
+  - Sorting Layer/Order in Layer
+    - 按照Sorting Layer/Order in Layer 设置的值，越小越优先
+    - 无此属性，等同于 Sorting Layer=default ,Order in Layer=0 参与排序
+  - RenderQueue 越小越优先
+  - RenderQueue 相等，
 
 ### UGUI渲染顺序
 
@@ -544,7 +567,8 @@ Unity支持许多图片格式的源文件，但是3D图形的实时渲染中不�
 同一个Canvas下，UI对象在Hierarchy窗口中越往上越先渲染，越往下越后渲染。
 
 ### UI上粒子效果如何实现
-- screenspace overlay 
+
+- screenspace overlay
 [mob-sakai/ParticleEffectForUGUI](https://github.com/mob-sakai/ParticleEffectForUGUI)
 
 - screenspace camera
@@ -581,6 +605,7 @@ second camera
 用第二个overlay摄像机 (Set the "depth" value on the second camera to a higher value than your main camera's "depth" value)，只渲染3D模型，然后把模型位置挪到UI上。
 
 Render Texture
+
 1. Set up a new Layer, lets call it "characterRender".
 2. Assign your character to this layer.
 3. Remove this layer from your main/GUI camera culling mask so that it does not get rendered.
@@ -600,6 +625,7 @@ Render Texture
 当使用Unity UI 制作用户界面时，记住，所有的被canvas绘制的图形都是被放在**透明渲染队列**。这意味着，Unity UI产生的图形都会使用透明混合（alpha blending）**从后向前渲染**。有一个重要的性能点要注意：**图形上的每一个像素都会被采样**，即使它被另一个不透明的图形完全覆盖。在移动设备上，大量的的过度绘制（overdraw）可以快速超出GPU填充率的上限。
 
 ### Canvas
+
 画布 (Canvas) 组件表示进行 UI 布局和渲染的抽象空间。所有 UI 元素都必须是附加了画布组件的游戏对象的子对象。
 
 传统上，渲染 UI 的效果就好像是直接在屏幕上绘制的简单图形设计。也就是说，没有摄像机观察 3D 空间的概念。Unity 便支持这种屏幕空间渲染方式，但也允许 UI 在场景中渲染为对象，具体取决于 Render Mode 属性的值。可用的模式包括 Screen Space - Overlay、Screen Space - Camera 和 World Space。
@@ -622,7 +648,8 @@ Layout components 控制RectTransform的大小和位置，通常被用来创建�
 
 **图形组件和排版组件的更新被称为重建（rebuild）。**
 
-### 画布组 (Canvas Group) 
+### 画布组 (Canvas Group)
+
 可集中控制整组 UI 元素的某些方面，而无需单独处理每个元素。画布组的属性会影响所在的游戏对象以及所有子对象。
 
 典型用途为：
@@ -632,6 +659,7 @@ Layout components 控制RectTransform的大小和位置，通常被用来创建�
 - 通过在 UI 元素或其某个父元素上放置画布组 (Canvas Group) 组件并将其 Block Raycasts 属性设置为 false 来使一个或多个 UI 元素不阻止鼠标事件。
 
 ### 合批过程（Canvases）
+
 合批过程是指Canvas合并UI元素的网格，并且生成发送给Unity渲染管线的命令。这个过程产生的结果会被缓存住，直到他们被重新标记为dirty，组成它的任何一个网格变化都会使其变为dirty。
 
 Canvas使用的网格都是从绑定在Canvas上的CanvasRenderer获得，但是不包含子Canvas的网格。
@@ -648,15 +676,17 @@ Canvas使用的网格都是从绑定在Canvas上的CanvasRenderer获得，但是
 
 4).判断相邻元素是否进行合批，得到批次号
 
-
 ### 重绘过程（Graphics）
+
 重绘过程是指Unity UI 的C# 图形组件的排版和网格被重新计算。这在 CanvasUpdateRegistry类中执行。
 
 ### 排版重建
+
 要重新计算包含一个或多个布局组件合适的位置（大小），设置合适的层级顺序很重要。在层级监视器（hierarchy ）中排版靠近根节点的可以能会影响它子集的排版，所以需要被先计算。
 为了实现这个，Unity UI 按照hierarchy中深度对dirty的排版组件排序，越高的（父节点少的）排在前面。排序后的布局组件被要求重建它们的布局；这就是通过改变布局组件来控制UI元素位置和大小。
 
 ### 图形重建
+
 当重建UI的时候，Unity UI 会调用ICanvasElement的Rebuild接口。图形实现这个接口，在PreRender阶段执行两个步骤。
 
 如果顶点数据被标记为dirty（如RectTransfom改变大小），那么需要重建网格。
@@ -686,6 +716,7 @@ Canvas使用的网格都是从绑定在Canvas上的CanvasRenderer获得，但是
 7) 其他：shadow组件 useGraphicAlpha effectDistance，effectColor变化
 
 ### 网格重建/合并（对应Canvas.BuildBatch）
+
 在 UGUI 中，Batch是以Canvas为单位的，即在同一个Canvas下的UI元素最终都会被Batch到同一个Mesh中。而在Batch前，UGUI会根据这些UI元素的材质（通常就是Atlas）以及渲染顺序进行重排，在不改变渲染结果的前提下，尽可能将相同材质的UI元素合并在同一个SubMesh中，从而把DrawCall降到最低。而Batch的操作只会在UI元素发生变化时才进行，且合成的Mesh越大，操作的耗时也就越大。
 
 综上，只要UI元素变了，就会引发网格重建(BuildBatch)；只有当元素的顶点属性发生变化，才会出现网格更新(SendWillRenderCanvases)。重建出现的频率应该是高于更新的，因为更新总是伴随着重建。
@@ -740,28 +771,19 @@ UI的隐藏我们可以使用将其移到Canvas外的方法，而不是利用Set
 
 - 谨慎使用UI元素的enable与disable,因为它们会触发耗时较高的rebuild，替代方案之一是enable和disableUI元素的canvasrender或者Canvas。
 
-- UI的批处理
-如果UI元素会改变数值或是位置，会影响批处理，导致向GPU发送更多的drawcall。因此建议：
-
-      相同Canvas中的UI元素的Z值要相同，这样才不会打断批处理。
-      相同Canvas中的UI元素要使用相同的材质和纹理，材质或着色器可以有动态变换（例如一些特效），这不会影响批处理。
-      相同Canvas中的UI元素要使用相同裁剪矩阵。
+- UI的批处理：如果UI元素会改变数值或是位置，会影响批处理，导致向GPU发送更多的drawcall。因此建议：
+  - 相同Canvas中的UI元素的Z值要相同，这样才不会打断批处理。
+  - 相同Canvas中的UI元素要使用相同的材质和纹理，材质或着色器可以有动态变换（例如一些特效），这不会影响批处理。
+  - 相同Canvas中的UI元素要使用相同裁剪矩阵。
 
 - 将更新频率不同的UI放在不同的Canvas上。
 
-- Graphic Raycaster
+- Graphic Raycaster：​该组件是用来处理输入事件，默认挂载在每个Canvas上。有时不能互动的对象仍是canvas中的一部分，并附带了该组件，所以当每次鼠标或触控点击时，系统就要遍历所有可能接受输入事件的UI元素，就会造成多次的 “点落在矩形中” 的检查，来判断对象是否该作出反应。在UI很复杂的情况下，这个运算成本就会很高。因此建议确保只有可互动的Canvas才有该组件，节省CPU运行时间。
 
-​该组件是用来处理输入事件，默认挂载在每个Canvas上。有时不能互动的对象仍是canvas中的一部分，并附带了该组件，所以当每次鼠标或触控点击时，系统就要遍历所有可能接受输入事件的UI元素，就会造成多次的 “点落在矩形中” 的检查，来判断对象是否该作出反应。在UI很复杂的情况下，这个运算成本就会很高。因此建议确保只有可互动的Canvas才有该组件，节省CPU运行时间。
-
-- 全屏UI的处理
-
-游戏中可能会有些全屏UI（例如一些设置界面），会遮挡住场景物体或其他UI元素。然而它们即使被遮挡看不见，CPU和GPU还是会有消耗，因此建议：
-
-    3D场景完全被遮挡的话，关闭渲染3D场景的摄像机。
-    被遮蔽的UI，Disable这些Canvas，注意不是SetActive(false）。
-    尽可能的降低帧率，因为这些UI一般不需要刷新那么频繁。
-
-
+- 全屏UI的处理：游戏中可能会有些全屏UI（例如一些设置界面），会遮挡住场景物体或其他UI元素。然而它们即使被遮挡看不见，CPU和GPU还是会有消耗，因此建议：
+  - 3D场景完全被遮挡的话，关闭渲染3D场景的摄像机。
+  - 被遮蔽的UI，Disable这些Canvas，注意不是SetActive(false）。
+  - 尽可能的降低帧率，因为这些UI一般不需要刷新那么频繁。
 
 # 性能与调优
 
@@ -790,6 +812,7 @@ Profiler可以调试很多模块的参数，但我基本上用它抓CPU和内存
 Unity Editor 中的 AssetPostprocessor 类可用于在 Unity 项目上强制执行某些最低标准。导入资源时将回调此类。
 
 通用资源规则
+
 - 纹理：禁用 read/write enabled 标志；尽可能禁用 Mipmap；压缩所有纹理；实施合理的纹理大小限制
 
 - 模型：禁用 Read/Write enabled 标志；在非角色模型上禁用骨架；在动画模型上启用 Optimize Game Objects 选项；尽可能使用网格压缩；注意网格渲染器设置
@@ -809,6 +832,7 @@ Unity Editor 中的 AssetPostprocessor 类可用于在 Unity 项目上强制执�
 Resources 文件夹是 Unity 项目中许多常见问题的来源。Resources 文件夹的使用不当会使项目构建出现膨胀，导致内存消耗过高，并显著增加应用程序启动时间。
 
 >一般优化
+
 - 按 ID 寻址属性。Unity 不使用字符串名称对 Animator、Material 和 Shader 属性进行内部寻址。
 - 使用非分配物理 API，将 RaycastAll 调用替换为 RaycastNonAlloc，以此类推。
 - 与 UnityEngine.Object 子类进行 Null 比较，请避免在紧凑循环中或每帧运行的代码中进行此类 Null 比较。
@@ -822,8 +846,9 @@ Resources 文件夹是 Unity 项目中许多常见问题的来源。Resources �
 ## 优化注意事项
 
 脚本
+
 - 减少GetComponent、find等查找函数在Update等循环函数中的调用
-- go.CompareTag代替go.tag 
+- go.CompareTag代替go.tag
 - 减少SendMessage等同步函数调用
 - 减少字符串连接；for代替foreach，5.5以后版本foreach已经优化过了
 - 少用linq
@@ -881,8 +906,6 @@ Unity中有许多移动游戏对象的方法，例如 transform.Translate，如�
 - Accelerometer Frequency
 
 ​​这个设置在Project Settings->Player->IOS->Other Settings中，这个功能定义Unity从设备读取加速度仪信息的频率，在不需要加速仪的游戏中，将它启动或设置了高于需求的频率，会影响性能表现。因为读取硬件设备信息，会增加CPU的处理时间。
-
-
 
 # Unity 的 内存
 
@@ -1000,6 +1023,7 @@ Compression：Mesh Compression是使用压缩算法，将Mesh数据进行压缩�
 ## Managed Memory
 
 ### Native VM memory
+
 VM内存池：即Mono虚拟机的内存池，我们的内存以Block的形式管理，当一个Block连续6次GC没有被访问到，这块内存会被返回给系统，条件苛刻，比较难触发。
 
 ### GC
@@ -1016,18 +1040,17 @@ GC优化策略：减少对内存分配次数和引用次数、降低堆内存分
 
 GC的机制考量|能力
 ---|---
-Throughput（回收能力）|	一次GC能收回多少内存
-Pause times（暂停时长）|	GC时对主线程的影响会多大（卡顿）
-Fragmentation（碎片化）|	对整体内存池的碎片化影响多少
-Mutator overhead（额外消耗）|	GC时的消耗，GC时需要做很多的统计会产生消耗
-Scalability（可拓展性）|	拓展到多核多线程会不会有什么bug
-Portability（可移植性）|	在不同的平台上是否可以使用
+Throughput（回收能力）| 一次GC能收回多少内存
+Pause times（暂停时长）| GC时对主线程的影响会多大（卡顿）
+Fragmentation（碎片化）| 对整体内存池的碎片化影响多少
+Mutator overhead（额外消耗）| GC时的消耗，GC时需要做很多的统计会产生消耗
+Scalability（可拓展性）| 拓展到多核多线程会不会有什么bug
+Portability（可移植性）| 在不同的平台上是否可以使用
 
 Unity用的Boehm GC，简单粗暴，不分代。
 
-    Non-generational（非分代式），即全都堆在一起，因为这样会很快。分代的话就是例如大内存，小内存，超小内存分在不同的内存区域来进行管理（SGen GC的设计思想）。
-
-    Non-Compacting（非压缩式），即当有内存被释放的时候，这块区域就空着。而压缩式的会重新排布，填充空白区域，使内存紧密排布。
+- Non-generational（非分代式），即全都堆在一起，因为这样会很快。分代的话就是例如大内存，小内存，超小内存分在不同的内存区域来进行管理（SGen GC的设计思想）。
+- Non-Compacting（非压缩式），即当有内存被释放的时候，这块区域就空着。而压缩式的会重新排布，填充空白区域，使内存紧密排布。
 
 上面的形式就会导致我们的内存碎片化，可能我们当前的内存并不大的时候，添加一块较大内存时，却没有任何的一个空间放得下（即使整体的空间足够），导致内存扩充很多。因此建议先操作大内存，然后操作小内存。
 
@@ -1040,6 +1063,7 @@ Incremental GC
 主要解决主线程卡顿的问题，现在进行一次GC主线程被迫要停下来，遍历所有的Memory Island，决定哪些要被GC掉，会造成一定时间的主线程卡顿。Incremental GC把前面暂停主线程的事分帧做了，这样主线程不会出现峰值。
 
 ### 堆栈
+
 堆栈是内存中存储函数和值类型的地方。
 
 例如我们调用一个函数A，会将这个函数体与函数收到的参数放入到堆栈中，若在函数A中调用函数B，同样会把函数B存放到堆栈中。当函数B运行结束，会将其从堆栈中移除，然后当A运行结束，把A从堆栈中移除。
@@ -1049,6 +1073,7 @@ Incremental GC
 由于是堆栈的结构，因此不会遇到碎片化或是垃圾收集（GC）的问题。但是可能会碰见堆栈溢出的问题，比如调用了太多的函数导致一直push东西进堆栈，占据越来越多的内存空间，导致堆栈溢出。
 
 ### 堆积
+
 堆积是内存中另一个区域，要比堆栈大，我们将所有的引用类型存放在这。通常我们每创建一个新的对象，会在堆积中找到下一个足够存放的空位置，将其存储。但是当我们销毁对象后，内存空间不会马上释放出来，而是标记成未使用，之后垃圾收集器会释放这部分空间。
 
 对象实例化和摧毁的过程其实很慢，所以我们要尽可能地避免在堆积中配置内存的行为。如果我们需要的内存比之前已经配置好的还多，在放不下的情况下，**堆积会膨胀，并且每次都增长两倍，且不会再缩回去**，过大的堆积就会影响到我们游戏的性能。当我们在堆积中释放了一些占用空间小的对象，而后添加一些占用空间大的对象时，由于前面释放的空间不足以存放下，就会导致这些空间空出来，使得内存的使用情况就变得断断续续起来，这也就是内存的碎片化，同样降低我们的游戏性能。
@@ -1093,10 +1118,9 @@ Scriptable Objects
 
 在游戏空闲（如场景切换时）强制执行GC
 
-
 ## [Memory in Unity](https://docs.unity3d.com/cn/2022.1/Manual/performance-memory-overview.html)
 
-### Three memory management layers 
+### Three memory management layers
 
 >Managed memory
 
@@ -1123,7 +1147,9 @@ C++ memory that Unity uses to run the engine. In most situations, this memory is
 The Unity engine’s internal C/C++ core has its own memory management system, which is referred to as native memory. In most situations, you can’t directly access or modify this memory type.
 
 ### Memory fragmentation and heap expansion
+
 在Managed memory中，当没有足够的空间分配给一个大对象，Unity memory manager会执行下面两个操作：
+
 - GC启动，尝试释放足够的空间以满足分配请求。
 - GC执行完毕，如果仍然没有足够的空间满足分配请求，托管堆会扩展。在大部分平台上，扩展倍数为2。
 
@@ -1140,12 +1166,16 @@ TLS and threadsafe linear allocators
 The process of locating and freeing up unused memory is called garbage collection (GC).
 
 Unity的垃圾回收器有3种模式：
+
 - Incremental garbage collection: Enabled by default (Project Settings > Player > Configuration), this mode spreads out the process of garbage collection over multiple frames.
 - Incremental garbage collection disabled: If you disable the Incremental GC Player Setting, the garbage collector stops running your application to inspect and process objects on the heap.
 - Disable automatic garbage collection: Use the GarbageCollector.GCMode API to take full control of when Unity should run the garbage collector.
 
-
 # 资源
+
+## Unity资源管理 看完这张图你就全知道了
+
+![Unity资源管理 看完这张图你就全知道了](image/Unity资源管理看完这张图你就全知道了.jpg)
 
 ## 资产
 
@@ -1178,6 +1208,7 @@ Object卸载
 - 来自于AssetBundle的对象，可以用过调用AssetBundle.Unload(true)，立即自动卸载，这会使对象Instance ID和文件GUID和本地ID变为无效，如果一个对象引用了它，那么这个对象会变为Missing状态。C#中如果有访问未加载的对象的方法或属性，会产生空指针异常。
 
 ### 如何安全的在不同工程间安全地迁移asset数据？三种方法
+
 1.将Assets目录和Library目录一起迁移
 
 2.导出包，export Package
@@ -1185,12 +1216,12 @@ Object卸载
 3.用unity自带的assets Server功能
 
 ### 当删除Unity工程Assets目录下的meta文件时会导致什么？为什么？
+
 会导致在场景中游戏对象看不到，或者报错，材质找不到资源。多人协作的时候会导致资源的重复产生。因为每个资源文件都对应一个.meta文件，这个.meta文件中的guid就是唯一标识这个资源的。材质就是通过这个guid来记录自己使用了那些资源，而且同一个资源的guid会因为不同的电脑而不同，所以当你上传了丢失了.meta文件的资源的时候，到了别人的机器上就会重新产生guid，那个这个资源就相当于垃圾了。
 
 Unity还在内部维护了一张资产GUID和路径的映射表，每当有新的资源进入工程，或者删除了某些资源。又或者调整了资源路径，Unity的编辑器都会自动修改这张映射表以便正确的记录资产位置。所以如果.meta文件丢失或者重新生成了不一样的GUID的话，Unity就会丢失引用，在工程内的表现就是某个脚本显示“Missing”,或者某些贴图材质的丢失导致场景出现粉红色。
 
 meta文件：Unity在首次将Asset导入Unity时会生成meta文件，它与Asset存储在同一个目录中。该文件中记录了资源的GUID和fileID（本地ID），文件GUID(File GUID)标识了资源文件(Asset file)在哪个目标资源(target resource)文件里，fileID（本地ID）用于标识Asset中的每个子Object和组件。资源间的依赖关系通过GUID来确定；资源内部的依赖关系使用fileID来确定，每个fileID对应一组组件信息，该信息记录了其对应组件的类型及初始化信息。
-
 
 ## Resources
 
@@ -1212,7 +1243,6 @@ AssetDatabase：在编辑器内加载卸载资源，并不能在游戏发布时�
 
 [资源管理系统-基础篇（四）AssetBundle 最佳实践](https://zhuanlan.zhihu.com/p/98081170)
 
-
 [AssetBundle 工作流程](https://docs.unity3d.com/cn/2021.2/Manual/AssetBundles-Workflow.html)
 ![AssetWorkflowOverview](image/AssetWorkflowOverview.svg)
 
@@ -1224,16 +1254,8 @@ AssetDatabase：在编辑器内加载卸载资源，并不能在游戏发布时�
 
 数据段包含通过序列化AssetBundle中的Assets而生成的原始数据。如果指定LZMA为压缩方案的话，则对所有序列化Assets后的完整字节数组进行压缩。如果指定了LZ4，则单独压缩单独Assets的字节。如果不使用压缩，数据段将保持为原始字节流。
 
-AssetBundle 文件
-
-    这是缺少 .manifest 扩展名的文件，其中包含在运行时为了加载资源而需要加载的内容。
-    AssetBundle 文件是一个存档，在内部包含多个文件。此存档的结构根据它是 AssetBundle 还是场景 AssetBundle 可能会略有不同。
-
-    场景 AssetBundle 与普通 AssetBundle 的不同之处在于，它针对场景及其内容的串流加载进行了优化。
-
-    AssetBundle 可用于可下载内容（DLC），减小初始安装大小，加载针对最终用户平台优化的资源，以及减轻运行时内存压力。
-
 ### AssetBundle manifests
+
 .manifest 文件
 
 对于在编辑器中指定的每个 AssetBundle，可以看到一个具有 AssetBundle 名称+“.manifest”的文件。
@@ -1243,16 +1265,19 @@ AssetBundle 文件
 清单捆绑包：一个额外捆绑包和清单的名称不同于先前创建的任何 AssetBundle。相反，此包以其所在的目录（构建 AssetBundle 的目录）命名。将显示 AssetBundle 之间的关系以及它们的依赖项。
 
 AssetBundleManifest对象本身提供GetAllAssetBundles API来列出与清单同时构建的所有AssetBundles，以及查询特定AssetBundle的依赖项的两个方法：
+
 - AssetBundleManifest.GetAllDependencies返回AssetBundle的所有层次依赖项，其中包括AssetBundle的直接子级、其子级的依赖项等。
 - AssetBundleManifest.GetDirectDependations只返回AssetBundle的直接子级
 
 ### 加载 AssetBundle
 
 AssetBundles可以通过四个不同的API进行加载。但受限于两个标准，这四个API的行为是不同的。2个标准如下：
+
 1. AssetBundles的压缩方式：LZMA、LZ4、还是未压缩的。
 2. AssetBundles的加载平台。
 
 而四个API分别是：
+
 - AssetBundle.LoadFromMemory(Async optional)
 
 Unity的建议是 不要使用这个API！
@@ -1272,7 +1297,6 @@ Unity的建议是 不要使用这个API！
 
 4、对于需要独特的、特定的缓存或下载需求的大项目，可以考虑使用自定义的下载器。编写自定义下载程序是一项重要并且复杂的任务，任何自定义的下载程序都应该与AssetBundle.LoadFromFile保持兼容。
 
-
 ### AB包依赖
 
 1.ab包引用到另一个ab包里面的资源，即ab包依赖了另一个ab包，例如Bundle1材质A引用了Bundle2的贴图B，那么Bundle1就是依赖Bundle2的，在加载材质A前，你必须先加载Bundle2到内存，unity不会自动加载依赖项。也就是说在你使用某个ab包时，必须先加载他依赖的ab包。
@@ -1280,12 +1304,15 @@ Unity的建议是 不要使用这个API！
 2.ab包引用到另一个不再任何ab包里的资源，例如Bundle1材质A引用了贴图B，而贴图B没有打进任何ab包里，那么最终打ab包时，unity会拷贝一份贴图B到Bundle1，如果有n个Bundle都引用了贴图B，那么这n个Bundle里都会有贴图的拷贝，会造成资源冗余。
 
 AssetBundleManifest文件包含了所有ab包的依赖关系，在使用ab包前，你需要先加载AssetBundleManifest文件，在通过AssetBundleManifest获取ab包的依赖ab包，AssetBundleManifest的加载：
-```
+
+```csharp
 AssetBundle assetBundle = AssetBundle.LoadFromFile(manifestFilePath);
 AssetBundleManifest manifest = assetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
 ```
+
 获取依赖包：
-```
+
+```csharp
 AssetBundle assetBundle = AssetBundle.LoadFromFile(manifestFilePath);
 AssetBundleManifest manifest = assetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
 string[] dependencies = manifest.GetAllDependencies("assetBundle"); //Pass the name of the bundle you want the dependencies for.
@@ -1296,7 +1323,6 @@ foreach(string dependency in dependencies)
 ```
 
 简单来说就是AssetBundle之间的加载没有先后，但是Asset的加载有。
-
 
 ### AssetBundle.Unload
 
@@ -1329,6 +1355,7 @@ foreach(string dependency in dependencies)
 ![AB内存2](image/unity框架/asset%20bundle%20memory.png)
 
 ## Unity有哪些特定的文件夹名字，有什么作用？
+
 [特殊文件夹名称](https://docs.unity3d.com/cn/2021.2/Manual/SpecialFolders.html)
 
 - Assets
@@ -1357,7 +1384,6 @@ foreach(string dependency in dependencies)
 
   通过 Resources.Load() 只能访问 _Resources 文件夹_中的资源。然而，更多资源可能最终出现在“resources.assets”文件中，因为它们是依赖项。（例如，Resources 文件夹中的材质可能引用 Resources 文件夹之外的纹理）
 
-
 ## 清单文件
 
 项目清单 (manifest.json) 存储 Package Manager 在查找和加载正确的包时所需的信息，并列出声明为依赖项的包和版本。
@@ -1375,6 +1401,7 @@ foreach(string dependency in dependencies)
 [二:基于Resource ID的资源管理机制](https://zhuanlan.zhihu.com/p/38048506)
 
 ## (OLD)动态加载资源的方式？
+
 [在运行时加载资源](https://docs.unity3d.com/cn/2021.2/Manual/LoadingResourcesatRuntime.html)
 
 - 通过Resources模块，调用它的load函数：可以直接load并返回某个类型的Object，前提是要把这个资源放在以Resource命名的文件夹下，Unity不管有没有场景引用，都会将其全部打入到安装包中。Resources.Load();
@@ -1388,6 +1415,7 @@ foreach(string dependency in dependencies)
 可通过调用 AssetBundle.Unload() 或 AssetBundle.UnloadAsync(bool) 来卸载 AssetBundle 的资源。
 
 ## Addressable 管理资源的优势有哪些？
+
 AssetsBundle作为Unity引擎主要的资产包单位，其使用、管理和更新一直是个难点，无数的项目使用着各种方案。为了减少大家重复造轮子的痛苦，官方终于给出Addressable System这个方案。
 
 这个方案将Assets的加载、卸载、查询、依赖、打包和更新等细节都进行了系统化的封装。优点非常多：
@@ -1415,37 +1443,30 @@ AssetsBundle作为Unity引擎主要的资产包单位，其使用、管理和更
 
 Unity3d提供了一个用于保存和读取数据的类(PlayerPrefs)
 
-
-
-
 # 其它
 
 ## IL2CPP & Mono
+
 Mono 是主要在需要小型运行时使用的 .NET 实现。 它是在 Android、macOS、iOS、tvOS 和 watchOS 上驱动 Xamarin 应用程序的运行时，且主要针对小内存占用。 Mono 还支持使用 Unity 引擎生成的游戏。
 
 Mono 通常与实时编译器一起使用，但它也提供在 iOS 之类的平台使用的完整静态编译器（预先编译）。
 
 Mono
 
-    比IL2CPP更快的构建时间。
-    由于即时编译（JIT），因此支持更多托管库。
-    支持运行时代码执行。
-    必须附带托管程序集（mono或.net生成的.dll文件）。
+- 比IL2CPP更快的构建时间。
+- 由于即时编译（JIT），因此支持更多托管库。
+- 支持运行时代码执行。
+- 必须附带托管程序集（mono或.net生成的.dll文件）。
 
 IL2CPP
 
-    与Mono相比，代码生成有了很大的改进。
-    可以从顶部到底部调试C++中的脚本代码。
-    可以启用引擎代码剥离以减小代码大小。
-    构建时间比Mono更长。
-    仅支持提前（AOT）编译。
-
+- 与Mono相比，代码生成有了很大的改进。
+- 可以从顶部到底部调试C++中的脚本代码。
+- 可以启用引擎代码剥离以减小代码大小。
+- 构建时间比Mono更长。
+- 仅支持提前（AOT）编译。
 
 ## [托管代码剥离](https://docs.unity3d.com/cn/2021.2/Manual/ManagedCodeStripping.html)
-
-
-
-
 
 ## [UnityWebRequest](https://docs.unity3d.com/2022.1/Documentation/ScriptReference/Networking.UnityWebRequest.html)
 
@@ -1470,6 +1491,5 @@ Addressable Asset System 允许开发者通过资源的地址来请求资源。�
 Addressables 使用异步加载来支持从具有任何依赖关系集合的任何位置进行加载。无论您一直以来使用的是直接引用、传统资源包还是 Resource 文件夹，Addressables 都提供了一种使游戏更具动态性的简单方法。Addressables 同时开启了资源包的世界，并会管理所有复杂性。
 
 使用 Addressable 资源系统节省内存，这简化了复杂项目的内容管理，并提供了自动内存管理和性能分析工具。
-
 
 ## [Unity-Technologies AssetBundles-Browser](https://github.com/Unity-Technologies/AssetBundles-Browser)
